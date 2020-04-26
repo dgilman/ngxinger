@@ -6,14 +6,19 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav'
+import { MatCardModule } from '@angular/material/card';
+import { MatGridListModule } from '@angular/material/grid-list';
+
+
 /* inger components */
 
 import { MostwantedComponent } from './mostwanted/mostwanted.component';
 import { NeighborhoodComponent } from './neighborhood/neighborhood.component';
 import { TopbarComponent } from './topbar/topbar.component'
+import { MostwantedMapComponent } from './mostwanted/mostwanted-map/mostwanted-map.component';
 
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MostwantedMapComponent } from './mostwanted-map/mostwanted-map.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +34,9 @@ import { MostwantedMapComponent } from './mostwanted-map/mostwanted-map.componen
     BrowserAnimationsModule,
     HttpClientModule,
     MatToolbarModule,
+    MatSidenavModule,
+    MatCardModule,
+    MatGridListModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -11,9 +11,9 @@ import VectorSource from 'ol/source/Vector';
 import { Style, Icon } from 'ol/style';
 import  LayerSwitcher from 'ol-layerswitcher';
 
-import { Constants } from '../constants'
-import { MapGeometry, OLLayerFactory } from '../map-geometry';
-import { MapGeometryService } from '../map-geometry.service';
+import { Constants } from '../../constants'
+import { MapGeometry, OLLayerFactory } from '../../map-geometry';
+import { MapGeometryService } from '../../map-geometry.service';
 
 
 

@@ -55,20 +55,20 @@ export class OLLayerFactory {
         this.vecStyles = {
             1: new Style({
                 fill: new Fill({
-                    color: "rgba(0, 255, 0, 0.1)",
+                    color: "rgba(0, 255, 0, 0.2)",
                 }),
                 stroke: new Stroke({
                     color: "rgba(0, 255, 0, 0.5)",
-                    width: 1,
+                    width: 2,
                 })
             }),
             2: new Style({
                 fill: new Fill({
-                    color: "rgba(0, 0, 255, 0.1)"
+                    color: "rgba(0, 0, 255, 0.2)"
                 }),
                 stroke: new Stroke({
                     color: "rgba(0, 0, 255, 0.5)",
-                    width: 1,
+                    width: 2,
                 })
             }),
         };
