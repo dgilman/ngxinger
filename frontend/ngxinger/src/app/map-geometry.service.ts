@@ -1,22 +1,23 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { MostWantedMap } from './mostwanted-map';
+import { MapGeometry } from './map-geometry';
 
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
-export class MostwantedMapService {
-  private url = '/api/mostwanted-map';
+export class MapGeometryService {
+  private url = '/api/map-geometry';
 
   constructor(
     private http: HttpClient,
   ) { }
 
-  getMostWantedMap(): Observable<MostWantedMap[]> {
+  getMapGeometry(): Observable<MapGeometry> {
     // XXX error handling
-    return this.http.get<MostWantedMap[]>(this.url);
+    // XXX query string
+    return this.http.get<MapGeometry>(this.url);
   }
 }

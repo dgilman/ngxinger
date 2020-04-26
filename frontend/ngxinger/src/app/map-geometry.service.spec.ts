@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { MostwantedMapService } from './mostwanted-map.service';
+import { MapGeometryService } from './map-geometry.service';
 
-describe('MostwantedMapService', () => {
-  let service: MostwantedMapService;
+describe('MapGeometryService', () => {
+  let service: MapGeometryService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(MostwantedMapService);
+    service = TestBed.inject(MapGeometryService);
   });
 
   it('should be created', () => {

@@ -8,6 +8,11 @@ export class Constants {
     // The teams
     // XXX enum
     public static Teams = Teams;
+    public static TeamNames = {
+        0: "Neutral",
+        1: "Enlightenment",
+        2: "Resistance",
+    }
 
     // Map default zoom
     public static MAP_X = -96;

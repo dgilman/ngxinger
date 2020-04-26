@@ -3,16 +3,17 @@ import { Component, OnInit } from '@angular/core';
 import { Map, View, Feature, Observable } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import { OSM, Vector } from 'ol/source';
-import { fromLonLat, toLonLat } from 'ol/proj';
+import { Group } from 'ol/layer';
 import VectorLayer from 'ol/layer/Vector';
+import { fromLonLat } from 'ol/proj';
 import { Point } from 'ol/geom';
 import VectorSource from 'ol/source/Vector';
 import { Style, Icon } from 'ol/style';
 import  LayerSwitcher from 'ol-layerswitcher';
 
 import { Constants } from '../constants'
-import { MostWantedMap } from '../mostwanted-map';
-import { MostwantedMapService } from '../mostwanted-map.service';
+import { MapGeometry, OLLayerFactory } from '../map-geometry';
+import { MapGeometryService } from '../map-geometry.service';
 
 
 
@@ -29,7 +30,7 @@ export class MostwantedMapComponent implements OnInit {
   private styles: any;
 
   constructor(
-    private mostWantedMapService: MostwantedMapService
+    private mapGeometryService: MapGeometryService
   ) {
     this.styles = {};
     // XXX had trouble getting let..of to work on enums, then arrays, so these are all literals
@@ -48,22 +49,24 @@ export class MostwantedMapComponent implements OnInit {
     }
    }
 
-  private renderMap(data: MostWantedMap[]) {
-    let styleMap = this.styles;
-    function dataToFeature(portal: MostWantedMap) {
-      let feature = new Feature(new Point(fromLonLat([portal.lng / 1e6, portal.lat / 1e6])));
-      feature.setStyle(styleMap[portal.team][portal.level]);
-      return feature;
-    }
-    let portals = data.map(dataToFeature);
+  private renderMap(mapGeometry: MapGeometry) {
+    let layerFactory = new OLLayerFactory(mapGeometry);
 
-    let portalLayer = new VectorLayer({
-      source: new VectorSource({
-        features: portals
-      })
+    let portalGroup = new Group();
+    portalGroup.set("title", "Portals");
+    portalGroup.setLayers(layerFactory.toPortalLayer());
+
+    let linkGroup = new Group();
+    linkGroup.set("title", "Links");
+    linkGroup.setLayers(layerFactory.toLinkLayer());
+
+    let fieldGroup = new Group();
+    fieldGroup.setLayers(layerFactory.toFieldLayer());
+    fieldGroup.set("title", "Fields");
+
+    [portalGroup, linkGroup, fieldGroup].forEach(group => {
+      group.set("fold", "open");
     });
-    // Hack around some typescript stuff with ol-layerswitcher
-    portalLayer.set('title', 'Portal layer');
 
     this.map = new Map({
       target: 'mostwanted-map',
@@ -71,7 +74,9 @@ export class MostwantedMapComponent implements OnInit {
         new TileLayer({
           source: new OSM()
         }),
-        portalLayer,
+        fieldGroup,
+        linkGroup,
+        portalGroup,
       ],
       view: new View({
         center: fromLonLat([Constants.MAP_X, Constants.MAP_Y]),
@@ -85,7 +90,7 @@ export class MostwantedMapComponent implements OnInit {
 
   ngOnInit(): void {
     // XXX if this fails we want it to not render the map
-    this.mostWantedMapService.getMostWantedMap().subscribe(data => this.renderMap(data));
+    this.mapGeometryService.getMapGeometry().subscribe(data => this.renderMap(data));
   }
 
 }
