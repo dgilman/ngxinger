@@ -15,9 +15,13 @@ export class MapGeometryService {
     private http: HttpClient,
   ) { }
 
-  getMapGeometry(): Observable<MapGeometry> {
+  // XXX I tried HttpParams here but ran into trouble with
+  // HttpParamsOptions (which is apparently a private type) is there a better choice than any?
+  getMapGeometry(options: any): Observable<MapGeometry> {
     // XXX error handling
-    // XXX query string
-    return this.http.get<MapGeometry>(this.url);
+
+    return this.http.get<MapGeometry>(this.url, {
+      params: options
+    });
   }
 }

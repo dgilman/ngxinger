@@ -13,6 +13,8 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatTableModule } from '@angular/material/table';
 import { MatListModule } from '@angular/material/list';
 
+import { ChartsModule } from 'ng2-charts';
+
 /* inger components */
 
 import { MostwantedComponent } from './mostwanted/mostwanted.component';
@@ -20,6 +22,8 @@ import { NeighborhoodComponent } from './neighborhood/neighborhood.component';
 import { TopbarComponent } from './topbar/topbar.component'
 import { MostwantedMapComponent } from './mostwanted/mostwanted-map/mostwanted-map.component';
 import { MostwantedTableComponent } from './mostwanted/mostwanted-table/mostwanted-table.component';
+import { NeighborhoodMapComponent } from './neighborhood/neighborhood-map/neighborhood-map.component';
+import { NeighborhoodChartComponent } from './neighborhood/neighborhood-chart/neighborhood-chart.component';
 
 
 @NgModule({
@@ -30,6 +34,8 @@ import { MostwantedTableComponent } from './mostwanted/mostwanted-table/mostwant
     TopbarComponent,
     MostwantedMapComponent,
     MostwantedTableComponent,
+    NeighborhoodMapComponent,
+    NeighborhoodChartComponent,
   ],
   imports: [
     BrowserModule,
@@ -42,6 +48,7 @@ import { MostwantedTableComponent } from './mostwanted/mostwanted-table/mostwant
     MatGridListModule,
     MatTableModule,
     MatListModule,
+    ChartsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

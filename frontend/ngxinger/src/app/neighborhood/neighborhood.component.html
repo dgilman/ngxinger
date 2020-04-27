@@ -1,1 +1,31 @@
-<p>neighborhood works!</p>
+<mat-grid-list cols="1">
+    <mat-grid-tile colspan="1">
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>Game map</mat-card-title>
+            </mat-card-header>
+            <app-neighborhood-map></app-neighborhood-map>
+            <mat-card-footer>
+                <p class="map-footer">click and drag</p>
+            </mat-card-footer>
+        </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="1">
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title><span class="enl">Enlightenment</span> owned portals</mat-card-title>
+                <mat-card-subtitle>Most wanted by the <span class="res">Resistance</span></mat-card-subtitle>
+            </mat-card-header>
+            <p>Graph goes here</p>
+        </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="1">
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title><span class="res">Resistance</span> owned portals</mat-card-title>
+                <mat-card-subtitle>Most wanted by the <span class="enl">Enlightenment</span></mat-card-subtitle>
+            </mat-card-header>
+            <p>Graph goes here</p>
+        </mat-card>
+    </mat-grid-tile>
+</mat-grid-list>

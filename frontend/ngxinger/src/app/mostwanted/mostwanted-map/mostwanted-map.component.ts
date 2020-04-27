@@ -33,6 +33,11 @@ export class MostwantedMapComponent implements OnInit {
   private styles: any;
   private mapUpdateServiceSubscription: Subscription;
   private circleLayer: VectorLayer;
+  private getMapGeometryOptions = {
+    portals: "y",
+    links: "y",
+    fields: "y",
+  }
 
   constructor(
     private mapGeometryService: MapGeometryService,
@@ -124,7 +129,7 @@ export class MostwantedMapComponent implements OnInit {
 
   ngOnInit(): void {
     // XXX if this fails we want it to not render the map
-    this.mapGeometryService.getMapGeometry().subscribe(data => this.renderMap(data));
+    this.mapGeometryService.getMapGeometry(this.getMapGeometryOptions).subscribe(data => this.renderMap(data));
   }
 
   ngOnDestroy(): void {
