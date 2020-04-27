@@ -2,3 +2,9 @@
     width: 100%;
     max-width: 1200px;
 }
+
+.mat-list-item {
+    padding: 8px 0;
+    display: flex;
+    width: auto;
+}

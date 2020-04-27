@@ -11,7 +11,7 @@ import { MatSidenavModule } from '@angular/material/sidenav'
 import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatTableModule } from '@angular/material/table';
-
+import { MatListModule } from '@angular/material/list';
 
 /* inger components */
 
@@ -41,6 +41,7 @@ import { MostwantedTableComponent } from './mostwanted/mostwanted-table/mostwant
     MatCardModule,
     MatGridListModule,
     MatTableModule,
+    MatListModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
