@@ -3,6 +3,7 @@ import itertools
 from typing import Dict, List
 
 # XXX black
+# XXX top-level error handler
 
 from flask import Flask, g, jsonify, Blueprint, request
 import pyproj
@@ -168,6 +169,49 @@ def get_map_geometry():
         ]
 
     return jsonify(retval)
+
+
+SECONDS_PER_DAY = 24 * 60 * 60
+
+
+def _db_td_to_human_string(db_td: str) -> int:
+    # Time deltas are stored in the database as "days_seconds"
+    days, seconds = db_td.split("_")
+    return (int(days) * SECONDS_PER_DAY) + int(seconds)
+
+
+def _row_to_longest_held(row: sqlite3.Row) -> Dict:
+    slippy_lat, slippy_lon = wgs_84_to_slippy.transform(row["lat"], row["lng"])
+    return {
+        "lat": slippy_lat,
+        "lng": slippy_lon,
+        "title": row["title"],
+        "held_length": _db_td_to_human_string(row["td"]),
+    }
+
+
+@api_bp.route('/longest-held')
+def get_longest_held():
+    team = int(request.args.get("team", 0))
+
+    if team not in (0, 1, 2):
+        raise Exception("Invalid team parameter")
+
+    # Although not good database practice the original stats code
+    # saved this table in descending order so a plain LIMIT works correctly.
+    # You'll just have to trust me on this one, I guess that works in SQLite.
+    g.cur.execute('''
+    SELECT
+        p.lat / 1e6 AS lat
+        , p.lng / 1e6 AS lng
+        , p.title
+        , td
+    FROM stats_longest_held s
+    JOIN portals p ON s.portal_id = p.id
+    WHERE s.faction = ?
+    LIMIT 10
+    ''', (team,))
+    return jsonify([_row_to_longest_held(row) for row in g.cur])
 
 
 # Must be last - routes are hooked up at registration time

@@ -1,0 +1,14 @@
+<mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <ng-container matColumnDef="title">
+        <mat-header-cell *matHeaderCellDef> Portal </mat-header-cell>
+        <mat-cell *matCellDef="let element" class="fake-link"> {{element.title}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="delta">
+        <mat-header-cell *matHeaderCellDef> Held length </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.held_length}} </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="jumpToPortal(row)"></mat-row>
+</mat-table>

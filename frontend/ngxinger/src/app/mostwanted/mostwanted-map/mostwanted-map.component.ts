@@ -1,19 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Map, View, Feature, Observable } from 'ol';
+import { Map, View, Feature } from 'ol';
 import TileLayer from 'ol/layer/Tile';
-import { OSM, Vector } from 'ol/source';
+import { OSM } from 'ol/source';
 import { Group } from 'ol/layer';
-import VectorLayer from 'ol/layer/Vector';
 import { fromLonLat } from 'ol/proj';
-import { Point } from 'ol/geom';
-import VectorSource from 'ol/source/Vector';
-import { Style, Icon } from 'ol/style';
+import { Style, Icon, Stroke } from 'ol/style';
 import  LayerSwitcher from 'ol-layerswitcher';
+import { Coordinate } from 'ol/coordinate';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
+import Circle from 'ol/geom/Circle';
 
 import { Constants } from '../../constants'
 import { MapGeometry, OLLayerFactory } from '../../map-geometry';
 import { MapGeometryService } from '../../map-geometry.service';
+import { MostWantedMapUpdateService } from '../mostwanted-map-update.service';
+import { Subscription } from 'rxjs';
 
 
 
@@ -28,10 +31,17 @@ export class MostwantedMapComponent implements OnInit {
 
   private map: Map
   private styles: any;
+  private mapUpdateServiceSubscription: Subscription;
+  private circleLayer: VectorLayer;
 
   constructor(
-    private mapGeometryService: MapGeometryService
+    private mapGeometryService: MapGeometryService,
+    private mostWantedMapUpdateService: MostWantedMapUpdateService
   ) {
+    this.mapUpdateServiceSubscription = this.mostWantedMapUpdateService.getMessage().subscribe(coord => {
+      this.updateMap(coord);
+    });
+    
     this.styles = {};
     // XXX had trouble getting let..of to work on enums, then arrays, so these are all literals
     for (let team of [0, 1, 2]) {
@@ -68,6 +78,16 @@ export class MostwantedMapComponent implements OnInit {
       group.set("fold", "open");
     });
 
+    this.circleLayer = new VectorLayer({
+      source: new VectorSource(),
+      style: new Style({
+        stroke: new Stroke({
+          color: 'red',
+          width: 5,
+        })
+      })
+    });
+
     this.map = new Map({
       target: 'mostwanted-map',
       layers: [
@@ -77,6 +97,7 @@ export class MostwantedMapComponent implements OnInit {
         fieldGroup,
         linkGroup,
         portalGroup,
+        this.circleLayer,
       ],
       view: new View({
         center: fromLonLat([Constants.MAP_X, Constants.MAP_Y]),
@@ -88,9 +109,26 @@ export class MostwantedMapComponent implements OnInit {
     this.map.addControl(layerSwitcher);
   }
 
+  private updateMap(coord: Coordinate) {
+    var circleLayerSource = this.circleLayer.getSource();
+    circleLayerSource.clear();
+    circleLayerSource.addFeature(new Feature(new Circle(coord, 60)));
+
+    let view = this.map.getView();
+    view.animate({
+      center: coord,
+      duration: 2000,
+      zoom: 15,
+    });
+  }
+
   ngOnInit(): void {
     // XXX if this fails we want it to not render the map
     this.mapGeometryService.getMapGeometry().subscribe(data => this.renderMap(data));
+  }
+
+  ngOnDestroy(): void {
+    this.mapUpdateServiceSubscription.unsubscribe();
   }
 
 }

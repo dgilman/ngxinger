@@ -1,0 +1,9 @@
+.fake-link {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+}
+
+table {
+    width: 100%;
+}

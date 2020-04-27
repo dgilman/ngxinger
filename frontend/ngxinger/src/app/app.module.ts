@@ -10,6 +10,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav'
 import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatTableModule } from '@angular/material/table';
 
 
 /* inger components */
@@ -18,6 +19,7 @@ import { MostwantedComponent } from './mostwanted/mostwanted.component';
 import { NeighborhoodComponent } from './neighborhood/neighborhood.component';
 import { TopbarComponent } from './topbar/topbar.component'
 import { MostwantedMapComponent } from './mostwanted/mostwanted-map/mostwanted-map.component';
+import { MostwantedTableComponent } from './mostwanted/mostwanted-table/mostwanted-table.component';
 
 
 @NgModule({
@@ -27,6 +29,7 @@ import { MostwantedMapComponent } from './mostwanted/mostwanted-map/mostwanted-m
     NeighborhoodComponent,
     TopbarComponent,
     MostwantedMapComponent,
+    MostwantedTableComponent,
   ],
   imports: [
     BrowserModule,
@@ -37,6 +40,7 @@ import { MostwantedMapComponent } from './mostwanted/mostwanted-map/mostwanted-m
     MatSidenavModule,
     MatCardModule,
     MatGridListModule,
+    MatTableModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

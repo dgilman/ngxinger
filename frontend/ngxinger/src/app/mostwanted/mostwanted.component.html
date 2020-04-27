@@ -5,6 +5,7 @@
                 <mat-card-title>Most Wanted</mat-card-title>
             </mat-card-header>
             <app-mostwanted-map></app-mostwanted-map>
+            <mat-card-footer><p class="map-footer">You may filter the map by gameplay objective and team.</p></mat-card-footer>
         </mat-card>
     </mat-grid-tile>
     <mat-grid-tile colspan="1">
@@ -12,6 +13,7 @@
             <mat-card-header>
                 <mat-card-title>Enlightenment</mat-card-title>
             </mat-card-header>
+            <app-mostwanted-table [team]="1"></app-mostwanted-table>
         </mat-card>
     </mat-grid-tile>
     <mat-grid-tile colspan="1">
@@ -19,6 +21,7 @@
             <mat-card-header>
                 <mat-card-title>Resistance</mat-card-title>
             </mat-card-header>
+            <app-mostwanted-table [team]="2"></app-mostwanted-table>
         </mat-card>
     </mat-grid-tile>
 </mat-grid-list>
