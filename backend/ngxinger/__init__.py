@@ -241,8 +241,7 @@ def _degree_to_db(degree: float) -> int:
     return round(degree * 1e6)
 
 
-@api_bp.route('/neighborhood-hourly')
-def get_neighborhood_hourly():
+def _validate_neighborhood_queryparams():
     for arg in ('xmin', 'xmax', 'ymin', 'ymax'):
         if arg not in request.args:
             raise Exception(f"Required parameter {arg} missing")
@@ -258,6 +257,13 @@ def get_neighborhood_hourly():
 
     lat_min, lng_min = slippy_to_wgs_84.transform(xmin, ymin)
     lat_max, lng_max = slippy_to_wgs_84.transform(xmax, ymax)
+
+    return lat_min, lng_min, lat_max, lng_max
+
+
+@api_bp.route('/neighborhood-hourly')
+def get_neighborhood_hourly():
+    lat_min, lng_min, lat_max, lng_max = _validate_neighborhood_queryparams()
 
     g.cur.execute('''
     WITH hours_in_day (hour) AS (
@@ -303,6 +309,38 @@ def get_neighborhood_hourly():
     ORDER BY base_values.hour
     ''', (_degree_to_db(lat_min), _degree_to_db(lat_max),
           _degree_to_db(lng_min), _degree_to_db(lng_max)))
+    return jsonify([dict(row) for row in g.cur])
+
+
+@api_bp.route('/neighborhood-players')
+def get_neighborhood_players():
+    lat_min, lng_min, lat_max, lng_max = _validate_neighborhood_queryparams()
+
+    g.cur.execute('''
+    SELECT
+        name
+        , built_count
+        , destroyed_count
+    FROM (
+        SELECT
+            players.name
+            , COUNT(*) FILTER (WHERE destroyed = 0) AS built_count
+            , COUNT(*) FILTER (WHERE destroyed = 1) AS destroyed_count
+        FROM resonator_plexts r
+        JOIN (
+            SELECT id
+            FROM portals
+            WHERE lat BETWEEN ? AND ?
+              AND lng BETWEEN ? AND ?
+        ) p ON r.portal = p.id
+        JOIN players ON r.player = players.id
+        GROUP BY players.name
+    ) inn
+    ORDER BY built_count + destroyed_count DESC
+    LIMIT 20
+    ''', (_degree_to_db(lat_min), _degree_to_db(lat_max),
+          _degree_to_db(lng_min), _degree_to_db(lng_max)))
+    # XXX indexes
     return jsonify([dict(row) for row in g.cur])
 
 
