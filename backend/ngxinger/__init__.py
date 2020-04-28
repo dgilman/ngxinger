@@ -24,7 +24,7 @@ Polygon = List[LineString]
 @api_bp.before_request
 def before_request():
     try:
-        conn = sqlite3.connect(app.config['DSN'])
+        conn = sqlite3.connect(app.config["DSN"])
     except Exception as e:
         # XXX error handling
         raise
@@ -36,7 +36,7 @@ def before_request():
 
 @api_bp.after_request
 def after_request(resp):
-    if hasattr(g, 'cur'):
+    if hasattr(g, "cur"):
         conn = g.cur.connection
         g.cur.close()
         conn.close()
@@ -56,8 +56,12 @@ def _row_to_portal(row: sqlite3.Row) -> Dict:
 
 
 def _row_to_link(row: sqlite3.Row) -> LineString:
-    p1_slippy_lat, p1_slippy_lng = wgs_84_to_slippy.transform(row["p1_lat"], row["p1_lng"])
-    p2_slippy_lat, p2_slippy_lng = wgs_84_to_slippy.transform(row["p2_lat"], row["p2_lng"])
+    p1_slippy_lat, p1_slippy_lng = wgs_84_to_slippy.transform(
+        row["p1_lat"], row["p1_lng"]
+    )
+    p2_slippy_lat, p2_slippy_lng = wgs_84_to_slippy.transform(
+        row["p2_lat"], row["p2_lng"]
+    )
     return [
         [p1_slippy_lat, p1_slippy_lng],
         [p2_slippy_lat, p2_slippy_lng],
@@ -65,20 +69,29 @@ def _row_to_link(row: sqlite3.Row) -> LineString:
 
 
 def _row_to_field(row: sqlite3.Row) -> Polygon:
-    p1_slippy_lat, p1_slippy_lng = wgs_84_to_slippy.transform(row["p1_lat"], row["p1_lng"])
-    p2_slippy_lat, p2_slippy_lng = wgs_84_to_slippy.transform(row["p2_lat"], row["p2_lng"])
-    p3_slippy_lat, p3_slippy_lng = wgs_84_to_slippy.transform(row["p3_lat"], row["p3_lng"])
-    return [[
-        [p1_slippy_lat, p1_slippy_lng],
-        [p2_slippy_lat, p2_slippy_lng],
-        [p3_slippy_lat, p3_slippy_lng],
-        [p1_slippy_lat, p1_slippy_lng],
-    ]]
+    p1_slippy_lat, p1_slippy_lng = wgs_84_to_slippy.transform(
+        row["p1_lat"], row["p1_lng"]
+    )
+    p2_slippy_lat, p2_slippy_lng = wgs_84_to_slippy.transform(
+        row["p2_lat"], row["p2_lng"]
+    )
+    p3_slippy_lat, p3_slippy_lng = wgs_84_to_slippy.transform(
+        row["p3_lat"], row["p3_lng"]
+    )
+    return [
+        [
+            [p1_slippy_lat, p1_slippy_lng],
+            [p2_slippy_lat, p2_slippy_lng],
+            [p3_slippy_lat, p3_slippy_lng],
+            [p1_slippy_lat, p1_slippy_lng],
+        ]
+    ]
 
 
 # XXX marshmallow? this is typescript MapGeometry
 
-@api_bp.route('/map-geometry', methods=('GET',))
+
+@api_bp.route("/map-geometry", methods=("GET",))
 def get_map_geometry():
     retval = {
         "portals": [],
@@ -89,13 +102,16 @@ def get_map_geometry():
     links = request.args.get("links", "y") == "y"
     fields = request.args.get("fields", "y") == "y"
 
-    g.cur.execute('''
+    g.cur.execute(
+        """
     SELECT MAX(obs_time) FROM portal_obs
-    ''')
+    """
+    )
     max_obs_time = g.cur.fetchall()[0][0]
 
     if portals:
-        g.cur.execute('''
+        g.cur.execute(
+            """
         SELECT
               p.lat / 1e6 AS lat
             , p.lng / 1e6 AS lng
@@ -105,18 +121,17 @@ def get_map_geometry():
         JOIN portals p ON obs.portal = p.id
         WHERE obs_time = ?
         ORDER BY obs.team
-        ''', (max_obs_time,))
+        """,
+            (max_obs_time,),
+        )
         retval["portals"] = [
-            {
-                "team": team,
-                "portals": [_row_to_portal(portal) for portal in portals],
-            }
-            for team, portals
-            in itertools.groupby(g.cur, key=_team_key)
+            {"team": team, "portals": [_row_to_portal(portal) for portal in portals],}
+            for team, portals in itertools.groupby(g.cur, key=_team_key)
         ]
 
     if links:
-        g.cur.execute('''
+        g.cur.execute(
+            """
         SELECT
             p1_obs.team
             , p1.lat / 1e6 AS p1_lat
@@ -130,18 +145,17 @@ def get_map_geometry():
         JOIN portals p2 ON p2_obs.portal = p2.id
         WHERE p1_obs.obs_time = ?
         ORDER BY p1_obs.team
-        ''', (max_obs_time,))
+        """,
+            (max_obs_time,),
+        )
         retval["links"] = [
-            {
-                "team": team,
-                "geoms": [_row_to_link(link) for link in links],
-            }
-            for team, links
-            in itertools.groupby(g.cur, key=_team_key)
+            {"team": team, "geoms": [_row_to_link(link) for link in links],}
+            for team, links in itertools.groupby(g.cur, key=_team_key)
         ]
 
     if fields:
-        g.cur.execute('''
+        g.cur.execute(
+            """
         SELECT
             p1_obs.team
             , p1.lat / 1e6 AS p1_lat
@@ -159,14 +173,12 @@ def get_map_geometry():
         JOIN portals p3 ON p3_obs.portal = p3.id
         WHERE p1_obs.obs_time = ?
         ORDER BY p1_obs.team
-        ''', (max_obs_time,))
+        """,
+            (max_obs_time,),
+        )
         retval["fields"] = [
-            {
-                "team": team,
-                "geoms": [_row_to_field(field) for field in fields],
-            }
-            for team, fields
-            in itertools.groupby(g.cur, key=_team_key)
+            {"team": team, "geoms": [_row_to_field(field) for field in fields],}
+            for team, fields in itertools.groupby(g.cur, key=_team_key)
         ]
 
     return jsonify(retval)
@@ -191,7 +203,7 @@ def _row_to_longest_held(row: sqlite3.Row) -> Dict:
     }
 
 
-@api_bp.route('/longest-held')
+@api_bp.route("/longest-held")
 def get_longest_held():
     team = int(request.args.get("team", 0))
 
@@ -201,7 +213,8 @@ def get_longest_held():
     # Although not good database practice the original stats code
     # saved this table in descending order so a plain LIMIT works correctly.
     # You'll just have to trust me on this one, I guess that works in SQLite.
-    g.cur.execute('''
+    g.cur.execute(
+        """
     SELECT
         p.lat / 1e6 AS lat
         , p.lng / 1e6 AS lng
@@ -210,7 +223,9 @@ def get_longest_held():
     FROM stats_longest_held s
     JOIN portals p ON s.portal_id = p.id
     WHERE s.faction = ?
-    ''', (team,))
+    """,
+        (team,),
+    )
     return jsonify([_row_to_longest_held(row) for row in g.cur])
 
 
@@ -241,18 +256,18 @@ def _degree_to_db(degree: float) -> int:
 
 
 def _validate_neighborhood_queryparams():
-    for arg in ('xmin', 'xmax', 'ymin', 'ymax'):
+    for arg in ("xmin", "xmax", "ymin", "ymax"):
         if arg not in request.args:
             raise Exception(f"Required parameter {arg} missing")
         try:
             float(request.args[arg])
         except ValueError:
-            raise Exception(f'Unable to parse {arg} as float')
+            raise Exception(f"Unable to parse {arg} as float")
 
-    xmin = float(request.args['xmin'])
-    xmax = float(request.args['xmax'])
-    ymin = float(request.args['ymin'])
-    ymax = float(request.args['ymax'])
+    xmin = float(request.args["xmin"])
+    xmax = float(request.args["xmax"])
+    ymin = float(request.args["ymin"])
+    ymax = float(request.args["ymax"])
 
     lat_min, lng_min = slippy_to_wgs_84.transform(xmin, ymin)
     lat_max, lng_max = slippy_to_wgs_84.transform(xmax, ymax)
@@ -260,11 +275,12 @@ def _validate_neighborhood_queryparams():
     return lat_min, lng_min, lat_max, lng_max
 
 
-@api_bp.route('/neighborhood-hourly')
+@api_bp.route("/neighborhood-hourly")
 def get_neighborhood_hourly():
     lat_min, lng_min, lat_max, lng_max = _validate_neighborhood_queryparams()
 
-    g.cur.execute('''
+    g.cur.execute(
+        """
     WITH hours_in_day (hour) AS (
         VALUES 
             -- generate_series is not compiled into most sqlites
@@ -306,16 +322,23 @@ def get_neighborhood_hourly():
         GROUP BY hour, destroyed
     ) stats ON base_values.hour = stats.hour AND base_values.destroyed = stats.destroyed
     ORDER BY base_values.hour
-    ''', (_degree_to_db(lat_min), _degree_to_db(lat_max),
-          _degree_to_db(lng_min), _degree_to_db(lng_max)))
+    """,
+        (
+            _degree_to_db(lat_min),
+            _degree_to_db(lat_max),
+            _degree_to_db(lng_min),
+            _degree_to_db(lng_max),
+        ),
+    )
     return jsonify([dict(row) for row in g.cur])
 
 
-@api_bp.route('/neighborhood-players')
+@api_bp.route("/neighborhood-players")
 def get_neighborhood_players():
     lat_min, lng_min, lat_max, lng_max = _validate_neighborhood_queryparams()
 
-    g.cur.execute('''
+    g.cur.execute(
+        """
     SELECT
         name
         , built_count
@@ -337,11 +360,16 @@ def get_neighborhood_players():
     ) inn
     ORDER BY built_count + destroyed_count DESC
     LIMIT 20
-    ''', (_degree_to_db(lat_min), _degree_to_db(lat_max),
-          _degree_to_db(lng_min), _degree_to_db(lng_max)))
-    # XXX indexes
+    """,
+        (
+            _degree_to_db(lat_min),
+            _degree_to_db(lat_max),
+            _degree_to_db(lng_min),
+            _degree_to_db(lng_max),
+        ),
+    )
     return jsonify([dict(row) for row in g.cur])
 
 
 # Must be last - routes are hooked up at registration time
-app.register_blueprint(api_bp, url_prefix='/api')
+app.register_blueprint(api_bp, url_prefix="/api")
