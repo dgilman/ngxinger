@@ -7,7 +7,7 @@ import { Group } from 'ol/layer';
 import { fromLonLat } from 'ol/proj';
 import { Style, Icon } from 'ol/style';
 
-import { Constants } from '../../constants'
+import { Constants } from '../../constants';
 import { MapGeometry, OLLayerFactory } from '../../map-geometry';
 import { NeighborhoodSelect } from '../neighborhood-select';
 import { NeighborhoodSelectService } from '../neighborhood-select.service';
@@ -24,14 +24,14 @@ import GeometryType from 'ol/geom/GeometryType';
   styleUrls: ['./neighborhood-map.component.css']
 })
 export class NeighborhoodMapComponent implements OnInit {
-  private map: Map
+  private map: Map;
   private styles: any;
   private drawLayer: VectorLayer;
   private getMapGeometryOptions = {
-    portals: "y",
-    links: "n",
-    fields: "n",
-  }
+    portals: 'y',
+    links: 'n',
+    fields: 'n',
+  };
 
   constructor(
     private mapGeometryService: MapGeometryService,
@@ -39,9 +39,9 @@ export class NeighborhoodMapComponent implements OnInit {
   ) {
     this.styles = {};
     // XXX had trouble getting let..of to work on enums, then arrays, so these are all literals
-    for (let team of [0, 1, 2]) {
+    for (const team of [0, 1, 2]) {
       this.styles[team] = {};
-      for (let level of [1, 2, 3, 4, 5, 6, 7, 8]) {
+      for (const level of [1, 2, 3, 4, 5, 6, 7, 8]) {
         if (team === 0 && !(level === 1)) {
           continue;
         }
@@ -49,23 +49,23 @@ export class NeighborhoodMapComponent implements OnInit {
           image: new Icon({
             src: `/assets/images/${team}/${level}.png`
           })
-        })
+        });
       }
     }
   }
 
   private renderMap(mapGeometry: MapGeometry) {
-    let layerFactory = new OLLayerFactory(mapGeometry);
+    const layerFactory = new OLLayerFactory(mapGeometry);
 
-    let portalGroup = new Group();
-    portalGroup.set("title", "Portals");
-    portalGroup.set("fold", "open");
+    const portalGroup = new Group();
+    portalGroup.set('title', 'Portals');
+    portalGroup.set('fold', 'open');
     portalGroup.setLayers(layerFactory.toPortalLayer());
 
-    let source = new VectorSource({ wrapX: false });
+    const source = new VectorSource({ wrapX: false });
 
     this.drawLayer = new VectorLayer({
-      source: source,
+      source,
     });
     this.map = new Map({
       target: 'neighborhood-map',
@@ -82,9 +82,9 @@ export class NeighborhoodMapComponent implements OnInit {
       })
     });
 
-    let draw = new Draw({
-      type: "Polygon" as GeometryType,
-      source: source,
+    const draw = new Draw({
+      type: 'Polygon' as GeometryType,
+      source,
     });
     draw.on('drawend', event => this.onDrawEnd(event));
     draw.on('drawstart', event => this.onDrawStart(event));
@@ -97,32 +97,32 @@ export class NeighborhoodMapComponent implements OnInit {
   }
 
   onDrawEnd(event: DrawEvent) {
-    let userPolygon = <Polygon>event.feature.getGeometry();
-    let rings = userPolygon.getCoordinates();
+    const userPolygon = event.feature.getGeometry() as Polygon;
+    const rings = userPolygon.getCoordinates();
 
     let min_x = Infinity;
     let min_y = Infinity;
     let max_x = -Infinity;
     let max_y = -Infinity;
 
-    for (let ring of rings) {
-      for (let coords of ring) {
+    for (const ring of rings) {
+      for (const coords of ring) {
         if (coords[0] < min_x) {
           min_x = coords[0];
-        };
+        }
         if (coords[0] > max_x) {
           max_x = coords[0];
-        };
+        }
         if (coords[1] < min_y) {
           min_y = coords[1];
-        };
+        }
         if (coords[1] > max_y) {
           max_y = coords[1];
         }
       }
     }
 
-    let newPolygon = new Polygon([[
+    const newPolygon = new Polygon([[
       [min_x, min_y],
       [max_x, min_y],
       [max_x, max_y],
@@ -132,11 +132,11 @@ export class NeighborhoodMapComponent implements OnInit {
     event.feature.setGeometry(newPolygon);
 
 
-    let neighborhoodSelect: NeighborhoodSelect = {
-        max_x: max_x,
-        max_y: max_y,
-        min_x: min_x,
-        min_y: min_y,
+    const neighborhoodSelect: NeighborhoodSelect = {
+        max_x,
+        max_y,
+        min_x,
+        min_y,
     };
 
     this.neighborhoodSelectService.sendMessage(neighborhoodSelect);

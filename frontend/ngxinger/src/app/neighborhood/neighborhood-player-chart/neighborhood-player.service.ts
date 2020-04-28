@@ -21,6 +21,6 @@ export class NeighborhoodPlayerService {
         xmax: neighborhoodSelect.max_x.toString(),
         ymin: neighborhoodSelect.min_y.toString(),
         ymax: neighborhoodSelect.max_y.toString(),
-    }})
+    }});
   }
 }

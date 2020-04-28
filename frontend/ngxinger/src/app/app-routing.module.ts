@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { MostwantedComponent } from './mostwanted/mostwanted.component'
-import { NeighborhoodComponent } from './neighborhood/neighborhood.component'
+import { MostwantedComponent } from './mostwanted/mostwanted.component';
+import { NeighborhoodComponent } from './neighborhood/neighborhood.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'mostwanted', pathMatch: 'full'},

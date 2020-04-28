@@ -21,14 +21,14 @@ export class MostWantedTableDataFactory {
     ) { }
 
     public toMostWantedTableData(): MostWantedTableData {
-        let coord: Coordinate = [this.mostWanted.lat, this.mostWanted.lng];
-        let held_moment = moment.duration(this.mostWanted.held_length, 'seconds');
-        let held_format = held_moment.format("d [days], h [hours], mm:ss [minutes]");
+        const coord: Coordinate = [this.mostWanted.lat, this.mostWanted.lng];
+        const held_moment = moment.duration(this.mostWanted.held_length, 'seconds');
+        const held_format = held_moment.format('d [days], h [hours], mm:ss [minutes]');
 
-        return <MostWantedTableData>{
-            coord: coord,
+        return {
+            coord,
             title: this.mostWanted.title,
             held_length: held_format,
-        }
+        } as MostWantedTableData;
     }
 }

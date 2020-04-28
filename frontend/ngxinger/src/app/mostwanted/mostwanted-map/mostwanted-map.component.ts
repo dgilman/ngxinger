@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { Map, View, Feature } from 'ol';
 import TileLayer from 'ol/layer/Tile';
@@ -6,13 +6,13 @@ import { OSM } from 'ol/source';
 import { Group } from 'ol/layer';
 import { fromLonLat } from 'ol/proj';
 import { Style, Icon, Stroke } from 'ol/style';
-import  LayerSwitcher from 'ol-layerswitcher';
+import LayerSwitcher from 'ol-layerswitcher';
 import { Coordinate } from 'ol/coordinate';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Circle from 'ol/geom/Circle';
 
-import { Constants } from '../../constants'
+import { Constants } from '../../constants';
 import { MapGeometry, OLLayerFactory } from '../../map-geometry';
 import { MapGeometryService } from '../../map-geometry.service';
 import { MostWantedMapUpdateService } from '../mostwanted-map-update.service';
@@ -27,17 +27,17 @@ import { Subscription } from 'rxjs';
     './mostwanted-map.component.css',
     ]
 })
-export class MostwantedMapComponent implements OnInit {
+export class MostwantedMapComponent implements OnInit, OnDestroy {
 
-  private map: Map
+  private map: Map;
   private styles: any;
   private mapUpdateServiceSubscription: Subscription;
   private circleLayer: VectorLayer;
   private getMapGeometryOptions = {
-    portals: "y",
-    links: "y",
-    fields: "y",
-  }
+    portals: 'y',
+    links: 'y',
+    fields: 'y',
+  };
 
   constructor(
     private mapGeometryService: MapGeometryService,
@@ -46,12 +46,12 @@ export class MostwantedMapComponent implements OnInit {
     this.mapUpdateServiceSubscription = this.mostWantedMapUpdateService.getMessage().subscribe(coord => {
       this.updateMap(coord);
     });
-    
+
     this.styles = {};
     // XXX had trouble getting let..of to work on enums, then arrays, so these are all literals
-    for (let team of [0, 1, 2]) {
+    for (const team of [0, 1, 2]) {
       this.styles[team] = {};
-      for (let level of [1, 2, 3, 4, 5, 6, 7, 8]) {
+      for (const level of [1, 2, 3, 4, 5, 6, 7, 8]) {
         if (team === 0 && !(level === 1)) {
           continue;
         }
@@ -59,28 +59,28 @@ export class MostwantedMapComponent implements OnInit {
           image: new Icon({
             src: `/assets/images/${team}/${level}.png`
           })
-        })
+        });
       }
     }
    }
 
   private renderMap(mapGeometry: MapGeometry) {
-    let layerFactory = new OLLayerFactory(mapGeometry);
+    const layerFactory = new OLLayerFactory(mapGeometry);
 
-    let portalGroup = new Group();
-    portalGroup.set("title", "Portals");
+    const portalGroup = new Group();
+    portalGroup.set('title', 'Portals');
     portalGroup.setLayers(layerFactory.toPortalLayer());
 
-    let linkGroup = new Group();
-    linkGroup.set("title", "Links");
+    const linkGroup = new Group();
+    linkGroup.set('title', 'Links');
     linkGroup.setLayers(layerFactory.toLinkLayer());
 
-    let fieldGroup = new Group();
+    const fieldGroup = new Group();
     fieldGroup.setLayers(layerFactory.toFieldLayer());
-    fieldGroup.set("title", "Fields");
+    fieldGroup.set('title', 'Fields');
 
     [portalGroup, linkGroup, fieldGroup].forEach(group => {
-      group.set("fold", "open");
+      group.set('fold', 'open');
     });
 
     this.circleLayer = new VectorLayer({
@@ -110,16 +110,16 @@ export class MostwantedMapComponent implements OnInit {
       })
     });
 
-    let layerSwitcher = new LayerSwitcher();
+    const layerSwitcher = new LayerSwitcher();
     this.map.addControl(layerSwitcher);
   }
 
   private updateMap(coord: Coordinate) {
-    var circleLayerSource = this.circleLayer.getSource();
+    const circleLayerSource = this.circleLayer.getSource();
     circleLayerSource.clear();
     circleLayerSource.addFeature(new Feature(new Circle(coord, 60)));
 
-    let view = this.map.getView();
+    const view = this.map.getView();
     view.animate({
       center: coord,
       duration: 2000,

@@ -27,9 +27,9 @@ export class MostwantedTableComponent implements OnInit {
     this.mostWantedService.getMostWanted(this.team).subscribe((mostWanted: MostWanted[]) => {
       // XXX error handling and etc
       this.dataSource = mostWanted.map(row => {
-        let factory = new MostWantedTableDataFactory(row);
+        const factory = new MostWantedTableDataFactory(row);
         return factory.toMostWantedTableData();
-      })
+      });
     });
   }
 

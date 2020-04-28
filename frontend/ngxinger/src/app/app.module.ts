@@ -7,7 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatSidenavModule } from '@angular/material/sidenav'
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatTableModule } from '@angular/material/table';
@@ -19,7 +19,7 @@ import { ChartsModule } from 'ng2-charts';
 
 import { MostwantedComponent } from './mostwanted/mostwanted.component';
 import { NeighborhoodComponent } from './neighborhood/neighborhood.component';
-import { TopbarComponent } from './topbar/topbar.component'
+import { TopbarComponent } from './topbar/topbar.component';
 import { MostwantedMapComponent } from './mostwanted/mostwanted-map/mostwanted-map.component';
 import { MostwantedTableComponent } from './mostwanted/mostwanted-table/mostwanted-table.component';
 import { NeighborhoodMapComponent } from './neighborhood/neighborhood-map/neighborhood-map.component';

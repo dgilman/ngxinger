@@ -24,7 +24,7 @@ export class NeighborhoodPlayerChartComponent implements OnInit {
         stacked: true,
       }]
     }
-  }
+  };
   public barChartLabels: Label[] = [];
   public barChartType: ChartType = 'bar';
   public barChartLegend = true;
@@ -49,7 +49,7 @@ export class NeighborhoodPlayerChartComponent implements OnInit {
 
   updateChart(neighborhoodSelect: NeighborhoodSelect) {
     this.neighborhoodHourlyService.getNeighborhoodPlayers(neighborhoodSelect).subscribe(neighborhoodPlayers => {
-      let hourlyData = new NeighborhoodPlayerDataFactory(neighborhoodPlayers).toNeighborhoodPlayerData();
+      const hourlyData = new NeighborhoodPlayerDataFactory(neighborhoodPlayers).toNeighborhoodPlayerData();
       this.builtDataSet.data = hourlyData.built;
       this.destroyedDataSet.data = hourlyData.destroyed;
       this.barChartLabels = hourlyData.playerNames;

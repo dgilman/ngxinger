@@ -38,9 +38,9 @@ export class OLLayerFactory {
     ){
         this.portalStyles = {};
         // XXX had trouble getting let..of to work on enums, then arrays, so these are all literals
-        for (let team of [0, 1, 2]) {
+        for (const team of [0, 1, 2]) {
           this.portalStyles[team] = {};
-          for (let level of [1, 2, 3, 4, 5, 6, 7, 8]) {
+          for (const level of [1, 2, 3, 4, 5, 6, 7, 8]) {
             if (team === 0 && !(level === 1)) {
               continue;
             }
@@ -48,26 +48,26 @@ export class OLLayerFactory {
               image: new Icon({
                 src: `/assets/images/${team}/${level}.png`
               })
-            })
+            });
           }
         }
 
         this.vecStyles = {
             1: new Style({
                 fill: new Fill({
-                    color: "rgba(0, 255, 0, 0.2)",
+                    color: 'rgba(0, 255, 0, 0.2)',
                 }),
                 stroke: new Stroke({
-                    color: "rgba(0, 255, 0, 0.5)",
+                    color: 'rgba(0, 255, 0, 0.5)',
                     width: 2,
                 })
             }),
             2: new Style({
                 fill: new Fill({
-                    color: "rgba(0, 0, 255, 0.2)"
+                    color: 'rgba(0, 0, 255, 0.2)'
                 }),
                 stroke: new Stroke({
-                    color: "rgba(0, 0, 255, 0.5)",
+                    color: 'rgba(0, 0, 255, 0.5)',
                     width: 2,
                 })
             }),
@@ -75,19 +75,19 @@ export class OLLayerFactory {
     }
 
     toPortalLayer(): Collection<VectorLayer> {
-        let olPortalLayers: VectorLayer[] = this.mapGeometry.portals.map(teamPortals => {
-            let portalFeatures = teamPortals.portals.map(portal => {
-                let feature = new Feature(new Point(portal.coord));
+        const olPortalLayers: VectorLayer[] = this.mapGeometry.portals.map(teamPortals => {
+            const portalFeatures = teamPortals.portals.map(portal => {
+                const feature = new Feature(new Point(portal.coord));
                 feature.setStyle(this.portalStyles[teamPortals.team][portal.level]);
                 return feature;
             });
-            let teamPortalLayer = new VectorLayer({
+            const teamPortalLayer = new VectorLayer({
                 source: new VectorSource({
                     features: portalFeatures,
                 })
             });
-            teamPortalLayer.set("title", Constants.TeamNames[teamPortals.team]);
-            teamPortalLayer.set("fold", "open");
+            teamPortalLayer.set('title', Constants.TeamNames[teamPortals.team]);
+            teamPortalLayer.set('fold', 'open');
             return teamPortalLayer;
         });
         return new Collection(olPortalLayers);
@@ -95,19 +95,19 @@ export class OLLayerFactory {
 
     private _toVecLayer<T>(
         teamGeoms: VecGeom[],
-        featureType: { new(Coordinate, GeometryLayout): T }
+        featureType: new(Coordinate, GeometryLayout) => T
         ): Collection<VectorLayer> {
-        let olLayers: VectorLayer[] = teamGeoms.map(teamGeom => {
-            let geomFeatures = teamGeom.geoms.map(vertex => {
+        const olLayers: VectorLayer[] = teamGeoms.map(teamGeom => {
+            const geomFeatures = teamGeom.geoms.map(vertex => {
                 return new Feature(new featureType(vertex, GeometryLayout.XY));
             });
-            let teamLayer = new VectorLayer({
+            const teamLayer = new VectorLayer({
                 source: new VectorSource({
                     features: geomFeatures,
                 })
             });
-            teamLayer.set("title", Constants.TeamNames[teamGeom.team]);
-            teamLayer.set("fold", "open");
+            teamLayer.set('title', Constants.TeamNames[teamGeom.team]);
+            teamLayer.set('fold', 'open');
             teamLayer.setStyle(this.vecStyles[teamGeom.team]);
             return teamLayer;
         });

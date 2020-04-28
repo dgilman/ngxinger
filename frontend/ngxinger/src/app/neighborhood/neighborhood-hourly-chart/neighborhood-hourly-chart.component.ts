@@ -24,7 +24,7 @@ export class NeighborhoodHourlyChartComponent implements OnInit {
         stacked: true,
       }]
     }
-  }
+  };
   public barChartLabels: Label[] = ['12:00 AM', '1:00 AM', '2:00 AM', '3:00 AM', '4:00 AM',
                                      '5:00 AM', '6:00 AM', '7:00 AM', '8:00 AM', '9:00 AM', '10:00 AM',
                                      '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM',
@@ -59,7 +59,7 @@ export class NeighborhoodHourlyChartComponent implements OnInit {
 
   updateChart(neighborhoodSelect: NeighborhoodSelect) {
     this.neighborhoodHourlyService.getNeighborhoodHours(neighborhoodSelect).subscribe(neighborhoodHours => {
-     let hourlyData = new NeighborhoodHourlyDataFactory(neighborhoodHours).toNeighborhoodHourlyData();
+     const hourlyData = new NeighborhoodHourlyDataFactory(neighborhoodHours).toNeighborhoodHourlyData();
      this.builtDataSet.data = hourlyData.built;
      this.destroyedDataSet.data = hourlyData.destroyed;
     });

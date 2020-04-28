@@ -7,7 +7,7 @@ import { MostWanted } from './mostwanted';
   providedIn: 'root'
 })
 export class MostWantedService {
-  private url = '/api/longest-held'
+  private url = '/api/longest-held';
 
   constructor(
     private http: HttpClient,
