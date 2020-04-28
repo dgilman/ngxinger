@@ -17,8 +17,14 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: 3.8
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
     - name: setup global environment
-      run: pip3 install virtualenv
+      run: |
+        pip3 install virtualenv
+        npm install -g @angular/cli npm
     - name: Lint
       run: make lint
     - name: Test
