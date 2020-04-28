@@ -1,4 +1,4 @@
-FROM gcr.io/cloud-marketplace/google/nginx1:1.12
+FROM gcr.io/cloud-marketplace/google/nginx1:latest
 
 COPY ./backend/ngxinger.pex .
 COPY ./nginx.conf /etc/nginx/conf.d/site.conf
