@@ -100,43 +100,43 @@ export class NeighborhoodMapComponent implements OnInit {
     const userPolygon = event.feature.getGeometry() as Polygon;
     const rings = userPolygon.getCoordinates();
 
-    let min_x = Infinity;
-    let min_y = Infinity;
-    let max_x = -Infinity;
-    let max_y = -Infinity;
+    let minX = Infinity;
+    let minY = Infinity;
+    let maxX = -Infinity;
+    let maxY = -Infinity;
 
     for (const ring of rings) {
       for (const coords of ring) {
-        if (coords[0] < min_x) {
-          min_x = coords[0];
+        if (coords[0] < minX) {
+          minX = coords[0];
         }
-        if (coords[0] > max_x) {
-          max_x = coords[0];
+        if (coords[0] > maxX) {
+          maxX = coords[0];
         }
-        if (coords[1] < min_y) {
-          min_y = coords[1];
+        if (coords[1] < minY) {
+          minY = coords[1];
         }
-        if (coords[1] > max_y) {
-          max_y = coords[1];
+        if (coords[1] > maxY) {
+          maxY = coords[1];
         }
       }
     }
 
     const newPolygon = new Polygon([[
-      [min_x, min_y],
-      [max_x, min_y],
-      [max_x, max_y],
-      [min_x, max_y],
-      [min_x, min_y],
+      [minX, minY],
+      [maxX, minY],
+      [maxX, maxY],
+      [minX, maxY],
+      [minX, minY],
     ]]);
     event.feature.setGeometry(newPolygon);
 
 
     const neighborhoodSelect: NeighborhoodSelect = {
-        max_x,
-        max_y,
-        min_x,
-        min_y,
+        max_x: maxX,
+        max_y: maxY,
+        min_x: minX,
+        min_y: minY,
     };
 
     this.neighborhoodSelectService.sendMessage(neighborhoodSelect);

@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { NeighborhoodPlayerChartComponent } from './neighborhood-player-chart.component';
 
@@ -8,7 +9,8 @@ describe('NeighborhoodPlayerChartComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NeighborhoodPlayerChartComponent ]
+      declarations: [ NeighborhoodPlayerChartComponent ],
+      imports: [HttpClientTestingModule]
     })
     .compileComponents();
   }));

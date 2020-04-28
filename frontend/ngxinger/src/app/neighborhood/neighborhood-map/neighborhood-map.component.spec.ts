@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { NeighborhoodMapComponent } from './neighborhood-map.component';
 
@@ -8,7 +9,8 @@ describe('NeighborhoodMapComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NeighborhoodMapComponent ]
+      declarations: [ NeighborhoodMapComponent ],
+      imports: [HttpClientTestingModule]
     })
     .compileComponents();
   }));
