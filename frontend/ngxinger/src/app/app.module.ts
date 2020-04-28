@@ -6,25 +6,18 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatCardModule } from '@angular/material/card';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { MatTableModule } from '@angular/material/table';
-import { MatListModule } from '@angular/material/list';
-
 import { ChartsModule } from 'ng2-charts';
 
 /* inger components */
 
 import { MostwantedComponent } from './mostwanted/mostwanted.component';
 import { NeighborhoodComponent } from './neighborhood/neighborhood.component';
-import { TopbarComponent } from './topbar/topbar.component';
 import { MostwantedMapComponent } from './mostwanted/mostwanted-map/mostwanted-map.component';
 import { MostwantedTableComponent } from './mostwanted/mostwanted-table/mostwanted-table.component';
 import { NeighborhoodMapComponent } from './neighborhood/neighborhood-map/neighborhood-map.component';
 import { NeighborhoodHourlyChartComponent } from './neighborhood/neighborhood-hourly-chart/neighborhood-hourly-chart.component';
 import { NeighborhoodPlayerChartComponent } from './neighborhood/neighborhood-player-chart/neighborhood-player-chart.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -32,7 +25,6 @@ import { NeighborhoodPlayerChartComponent } from './neighborhood/neighborhood-pl
     AppComponent,
     MostwantedComponent,
     NeighborhoodComponent,
-    TopbarComponent,
     MostwantedMapComponent,
     MostwantedTableComponent,
     NeighborhoodMapComponent,
@@ -44,13 +36,8 @@ import { NeighborhoodPlayerChartComponent } from './neighborhood/neighborhood-pl
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    MatToolbarModule,
-    MatSidenavModule,
-    MatCardModule,
-    MatGridListModule,
-    MatTableModule,
-    MatListModule,
     ChartsModule,
+    NgbModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

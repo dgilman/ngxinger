@@ -1,12 +1,20 @@
-<app-topbar></app-topbar>
-<mat-sidenav-container>
-    <mat-sidenav mode="side" opened>
-        <mat-nav-list>
-            <a mat-list-item (click)="router.navigate(['mostwanted'])">Most Wanted</a>
-            <a mat-list-item (click)="router.navigate(['neighborhood'])">Neighborhood View</a>
-        </mat-nav-list>
-    </mat-sidenav>
-    <mat-sidenav-content class="layout-max-width">
-        <router-outlet></router-outlet>
-    </mat-sidenav-content>
-</mat-sidenav-container>
+<header class="navbar navbar-expand navbar-dark px-4 flex-column flex-md-row bg-secondary text-white">
+    <span>Angular Inger</span>
+</header>
+<div class="container-fluid">
+    <div class="row flex-xl-nowrap">
+        <div class="col-12 col-lg-2">
+            <nav class="nav py-3">
+                <div class="nav-item mb-4">
+                    <a class="nav-link" (click)="router.navigate(['mostwanted'])">Most Wanted</a>
+                </div>
+                <div class="nav-item mb-4">
+                    <a class="nav-link" (click)="router.navigate(['neighborhood'])">Neighborhood View</a>
+                </div>
+            </nav>
+        </div>
+        <div class="col-12 col-lg-10">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>

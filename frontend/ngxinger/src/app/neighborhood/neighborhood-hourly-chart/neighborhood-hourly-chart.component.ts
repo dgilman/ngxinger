@@ -34,8 +34,18 @@ export class NeighborhoodHourlyChartComponent implements OnInit {
   public barChartLegend = true;
   public barChartPlugins = [];
 
-  public builtDataSet = {label: 'Resonators Built', data: [], backgroundColor: 'green'};
-  public destroyedDataSet = {label: 'Resonators Destroyed', data: [], backgroundColor: 'red'};
+  public builtDataSet: ChartDataSets = {
+    label: 'Resonators Built',
+    data: [],
+    backgroundColor: 'green',
+    hoverBackgroundColor: 'green',
+  };
+  public destroyedDataSet: ChartDataSets = {
+    label: 'Resonators Destroyed',
+    data: [],
+    backgroundColor: 'red',
+    hoverBackgroundColor: 'red',
+  };
   public barChartData: ChartDataSets[] = [
     this.builtDataSet, this.destroyedDataSet,
   ];

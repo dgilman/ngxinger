@@ -1,29 +1,31 @@
-<mat-grid-list cols="2">
-    <mat-grid-tile colspan="2">
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title>Game map</mat-card-title>
-            </mat-card-header>
+<div class="card mt-2">
+    <h2 class="card-header">
+        Game map
+    </h2>
+    <div class="card-body">
             <app-mostwanted-map></app-mostwanted-map>
-            <mat-card-footer><p class="map-footer">You may filter the map by gameplay objective and team.</p></mat-card-footer>
-        </mat-card>
-    </mat-grid-tile>
-    <mat-grid-tile colspan="1">
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title><span class="enl">Enlightenment</span> owned portals</mat-card-title>
-                <mat-card-subtitle>Most wanted by the <span class="res">Resistance</span></mat-card-subtitle>
-            </mat-card-header>
+    </div>
+    <div class="card-footer text-muted">
+            You may filter the map by gameplay objective and team.
+    </div>
+</div>
+<div class="card mt-2">
+    <h2 class="card-header">
+            <span class="enl">Enlightenment</span> owned portals
+            <br/>
+            <small class="text-muted">Most wanted by the <span class="res">Resistance</span></small>
+    </h2>
+    <div class="card-body">
             <app-mostwanted-table [team]="1"></app-mostwanted-table>
-        </mat-card>
-    </mat-grid-tile>
-    <mat-grid-tile colspan="1">
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title><span class="res">Resistance</span> owned portals</mat-card-title>
-                <mat-card-subtitle>Most wanted by the <span class="enl">Enlightenment</span></mat-card-subtitle>
-            </mat-card-header>
+    </div>
+</div>
+<div class="card mt-2">
+    <h2 class="card-header">
+            <span class="res">Resistance</span> owned portals
+            <br/>
+            <small class="text-muted">Most wanted by the <span class="enl">Enlightenment</span></small>
+    </h2>
+    <div class="card-body">
             <app-mostwanted-table [team]="2"></app-mostwanted-table>
-        </mat-card>
-    </mat-grid-tile>
-</mat-grid-list>
+    </div>
+</div>

@@ -1,31 +1,27 @@
-<mat-grid-list cols="1">
-    <mat-grid-tile colspan="1">
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title>Game map</mat-card-title>
-            </mat-card-header>
-            <app-neighborhood-map></app-neighborhood-map>
-            <mat-card-footer>
-                <p class="map-footer">click and drag</p>
-            </mat-card-footer>
-        </mat-card>
-    </mat-grid-tile>
-    <mat-grid-tile colspan="1">
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title><span class="enl">Enlightenment</span> owned portals</mat-card-title>
-                <mat-card-subtitle>Most wanted by the <span class="res">Resistance</span></mat-card-subtitle>
-            </mat-card-header>
-            <app-neighborhood-hourly-chart></app-neighborhood-hourly-chart>
-        </mat-card>
-    </mat-grid-tile>
-    <mat-grid-tile colspan="1">
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title><span class="res">Resistance</span> owned portals</mat-card-title>
-                <mat-card-subtitle>Most wanted by the <span class="enl">Enlightenment</span></mat-card-subtitle>
-            </mat-card-header>
-            <app-neighborhood-player-chart></app-neighborhood-player-chart>
-        </mat-card>
-    </mat-grid-tile>
-</mat-grid-list>
+<div class="card mt-2">
+    <h2 class="card-header">
+        Neighborhood View
+    </h2>
+    <div class="card-body">
+        <app-neighborhood-map></app-neighborhood-map>
+    </div>
+    <div class="card-footer text-muted">
+        Click and draw a polygon around a neighborhood.
+    </div>
+</div>
+<div class="card mt-2">
+    <h2 class="card-header">
+        Player activity by hour
+    </h2>
+    <div class="card-body">
+        <app-neighborhood-hourly-chart></app-neighborhood-hourly-chart>
+    </div>
+</div>
+<div class="card mt-2">
+    <h2 class="card-header">
+        Most active players
+    </h2>
+    <div class="card-body">
+        <app-neighborhood-player-chart></app-neighborhood-player-chart>
+    </div>
+</div>
