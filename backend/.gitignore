@@ -4,3 +4,5 @@ __pycache__/
 omaha.sqlite3
 venv/
 ngxinger/static
+dist/
+ngxinger.pex

@@ -126,5 +126,8 @@
       }
     }
   },
-  "defaultProject": "ngxinger"
+  "defaultProject": "ngxinger",
+  "cli": {
+    "analytics": "8aa8d18f-982a-49e8-839d-4a8b57965e4a"
+  }
 }

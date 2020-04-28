@@ -2,13 +2,18 @@ import sqlite3
 import itertools
 from typing import Dict, List
 import enum
+import os
 
 from flask import Flask, g, jsonify, Blueprint, request
 import pyproj
 from werkzeug.exceptions import InternalServerError
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path="")
 api_bp = Blueprint(f"api", __name__)
+
+app.config.from_mapping(
+    {"DSN": os.environ["NGXINGER_DSN"],}
+)
 
 # see https://epsg.io/4326 https://epsg.io/3857
 # Note that database coords are stored as integer wgs84
@@ -33,6 +38,11 @@ class Teams(enum.IntEnum):
     NEUTRAL = 0
     ENLIGHTENMENT = 1
     RESISTANCE = 2
+
+
+@app.route("/")
+def get_index_html():
+    return app.send_static_file("index.html")
 
 
 @app.errorhandler(InternalServerError)
@@ -398,7 +408,7 @@ def get_neighborhood_players():
     return jsonify([dict(row) for row in g.cur])
 
 
-@api_bp.route('/explode')
+@api_bp.route("/explode")
 def explode():
     raise BadRequest("This always fails.")
 

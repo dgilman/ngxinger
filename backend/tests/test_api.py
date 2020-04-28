@@ -341,15 +341,17 @@ def test_get_neighborhood_hourly(client, test_data):
     # This has got to be O(n**500000) but it runs fast
     for hour in range(23):
         for destroyed in (0, 1):
-            our_row = [x for x in data if x['hour'] == hour and x['destroyed'] == destroyed]
+            our_row = [
+                x for x in data if x["hour"] == hour and x["destroyed"] == destroyed
+            ]
             assert len(our_row) == 1
             our_row = our_row[0]
 
             # Assert on the actual data in the table
             if hour == 3:
-                assert our_row['action_count'] == 1
+                assert our_row["action_count"] == 1
             else:
-                assert our_row['action_count'] == 0
+                assert our_row["action_count"] == 0
 
 
 def test_get_neighborhood_players(client, test_data):
