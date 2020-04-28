@@ -1,31 +1,35 @@
-<div class="card mt-2">
-    <h2 class="card-header">
-        Game map
-    </h2>
-    <div class="card-body">
-            <app-mostwanted-map></app-mostwanted-map>
-    </div>
-    <div class="card-footer text-muted">
-            You may filter the map by gameplay objective and team.
-    </div>
+<div class="row">
+        <div class="card mt-2 col-12 col-lg-10">
+                <h2 class="card-header">
+                        Game map
+                </h2>
+                <div class="card-body">
+                        <app-mostwanted-map></app-mostwanted-map>
+                </div>
+                <div class="card-footer text-muted">
+                        You may filter the map by gameplay objective and team.
+                </div>
+        </div>
 </div>
-<div class="card mt-2">
-    <h2 class="card-header">
-            <span class="enl">Enlightenment</span> owned portals
-            <br/>
-            <small class="text-muted">Most wanted by the <span class="res">Resistance</span></small>
-    </h2>
-    <div class="card-body">
-            <app-mostwanted-table [team]="1"></app-mostwanted-table>
-    </div>
-</div>
-<div class="card mt-2">
-    <h2 class="card-header">
-            <span class="res">Resistance</span> owned portals
-            <br/>
-            <small class="text-muted">Most wanted by the <span class="enl">Enlightenment</span></small>
-    </h2>
-    <div class="card-body">
-            <app-mostwanted-table [team]="2"></app-mostwanted-table>
-    </div>
+<div class="row">
+        <div class="card mt-2 col-12 col-lg-5">
+                <h2 class="card-header">
+                        <span class="enl">Enlightenment</span> owned portals
+                        <br />
+                        <small class="text-muted">Most wanted by the <span class="res">Resistance</span></small>
+                </h2>
+                <div class="card-body">
+                        <app-mostwanted-table [team]="1"></app-mostwanted-table>
+                </div>
+        </div>
+        <div class="card mt-2 col-12 col-lg-5">
+                <h2 class="card-header">
+                        <span class="res">Resistance</span> owned portals
+                        <br />
+                        <small class="text-muted">Most wanted by the <span class="enl">Enlightenment</span></small>
+                </h2>
+                <div class="card-body">
+                        <app-mostwanted-table [team]="2"></app-mostwanted-table>
+                </div>
+        </div>
 </div>

@@ -210,7 +210,6 @@ def get_longest_held():
     FROM stats_longest_held s
     JOIN portals p ON s.portal_id = p.id
     WHERE s.faction = ?
-    LIMIT 10
     ''', (team,))
     return jsonify([_row_to_longest_held(row) for row in g.cur])
 

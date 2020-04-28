@@ -11,7 +11,10 @@ import { MostWantedMapUpdateService } from '../mostwanted-map-update.service';
 })
 export class MostwantedTableComponent implements OnInit {
   displayedColumns = ['title', 'delta'];
-  dataSource: MostWantedTableData[];
+  _dataSource: MostWantedTableData[];
+  page = 1;
+  pageSize = 10;
+  maxSize = 5;
 
   @Input()
   team: number;
@@ -20,17 +23,27 @@ export class MostwantedTableComponent implements OnInit {
     private mostWantedService: MostWantedService,
     private mostWantedMapUpdateService: MostWantedMapUpdateService
   ) {
-    this.dataSource = [];
-   }
+    this._dataSource = [];
+  }
 
   ngOnInit(): void {
     this.mostWantedService.getMostWanted(this.team).subscribe((mostWanted: MostWanted[]) => {
       // XXX error handling and etc
-      this.dataSource = mostWanted.map(row => {
+      this._dataSource = mostWanted.map(row => {
         const factory = new MostWantedTableDataFactory(row);
         return factory.toMostWantedTableData();
       });
     });
+  }
+
+  get dataSource(): MostWantedTableData[] {
+    return this._dataSource
+      .map((row, i) => ({id: i + 1, ...row}))
+      .slice((this.page - 1) * this.pageSize, (this.page - 1) * this.pageSize + this.pageSize);
+  }
+
+  get collectionSize() {
+    return this._dataSource.length;
   }
 
   jumpToPortal(row: MostWantedTableData) {
