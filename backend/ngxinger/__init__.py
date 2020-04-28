@@ -383,9 +383,16 @@ def get_neighborhood_players():
     FROM (
         SELECT
             players.name
-            , COUNT(*) FILTER (WHERE destroyed = 0) AS built_count
-            , COUNT(*) FILTER (WHERE destroyed = 1) AS destroyed_count
-        FROM resonator_plexts r
+            , SUM(built_count) AS built_count
+            , SUM(destroyed_count) AS destroyed_count
+        FROM (
+            SELECT
+                player
+                , portal
+                , CASE WHEN destroyed = 0 THEN 1 ELSE 0 END AS built_count
+                , CASE WHEN destroyed = 1 THEN 1 ELSE 0 END AS destroyed_count
+            FROM resonator_plexts
+        ) r
         JOIN (
             SELECT id
             FROM portals
