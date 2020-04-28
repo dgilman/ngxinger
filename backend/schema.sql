@@ -186,3 +186,9 @@ CREATE INDEX resonator_plexts_player_timestampMs ON resonator_plexts(player, tim
 CREATE INDEX captured_plexts_player_timestampMs ON captured_plexts (player, timestampMs);
 CREATE INDEX fracks_player_timestampMs ON fracks (player, timestampMs);
 CREATE INDEX fracks_portal ON fracks (portal);
+
+-- ngxinger indexes
+create index portals_lat on portals (lat);
+create index portals_lng on portals (lng);
+create index resonator_plexts_portal on resonator_plexts (portal);
+

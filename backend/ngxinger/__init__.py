@@ -14,6 +14,7 @@ api_bp = Blueprint(f"api", __name__)
 # see https://epsg.io/4326 https://epsg.io/3857
 # Note that database coords are stored as integer wgs84
 wgs_84_to_slippy = pyproj.Transformer.from_crs(4326, 3857)
+slippy_to_wgs_84 = pyproj.Transformer.from_crs(3857, 4326)
 
 Coordinate = List[float]
 LineString = List[Coordinate]
@@ -212,6 +213,97 @@ def get_longest_held():
     LIMIT 10
     ''', (team,))
     return jsonify([_row_to_longest_held(row) for row in g.cur])
+
+
+# A note on database indexes:
+# It would be cool if this was a real spatial database
+# with a 2d index type, then we could take the user's arbitrary polygon
+# and throw it at the database for these queries.  Instead, we find the extremes and
+# make a bounding box around it.
+
+# All hope of fast queries are not lost, though. The bounding box SQL
+# looks like this:
+# WHERE lon BETWEEN xmin AND xmax
+#   AND lat BETWEEN ymin AND ymax
+
+# If we build a regular b-tree index on (lon, lat) only the first column
+# in the index gets used.  Not so great.
+# If we build an index on (lon) and one on (lat): in most databases you can really only use
+# one index per table, and sqlite is one of those.
+# But all hope is not lost: depending on the statistical distribution of the data
+# in the table you may have one of those indexes be decently selective, and if
+# your table's statistics are up-to-date hopefully the query planner will pick that one.
+# Although this is not a viable solution for large databases my gut is that you'll still
+# see good results from 1-dimensional indexes on a lot of data sets.
+
+
+def _degree_to_db(degree: float) -> int:
+    return round(degree * 1e6)
+
+
+@api_bp.route('/neighborhood-hourly')
+def get_neighborhood_hourly():
+    for arg in ('xmin', 'xmax', 'ymin', 'ymax'):
+        if arg not in request.args:
+            raise Exception(f"Required parameter {arg} missing")
+        try:
+            float(request.args[arg])
+        except ValueError:
+            raise Exception(f'Unable to parse {arg} as float')
+
+    xmin = float(request.args['xmin'])
+    xmax = float(request.args['xmax'])
+    ymin = float(request.args['ymin'])
+    ymax = float(request.args['ymax'])
+
+    lat_min, lng_min = slippy_to_wgs_84.transform(xmin, ymin)
+    lat_max, lng_max = slippy_to_wgs_84.transform(xmax, ymax)
+
+    g.cur.execute('''
+    WITH hours_in_day (hour) AS (
+        VALUES 
+            -- generate_series is not compiled into most sqlites
+            (0), (1), (2), (3), (4), (5), (6),
+            (7), (8), (9), (10), (11), (12), (13),
+            (14), (15), (16), (17), (18), (19),
+            (20), (21), (22), (23)
+    ), base_values (hour, destroyed) AS (
+        SELECT hour, 0 AS destroyed FROM hours_in_day
+        UNION ALL
+        SELECT hour, 1 AS destroyed FROM hours_in_day
+    )
+    SELECT
+        base_values.hour
+        , base_values.destroyed
+        , coalesce(stats.action_count, 0) as action_count
+    FROM base_values
+    LEFT JOIN (
+        SELECT
+            hour
+            , destroyed
+            , COUNT(*) as action_count
+        FROM (
+            SELECT
+                -- timestampMs is millisecond UTC since UNIX epoch.
+                -- The relevant area is in CST, so we roughly estimate CST local time
+                -- by subtracting 6 hours from it. Unfortunately SQLite doesn't give us
+                -- anything more sophisticated.
+                  cast(strftime('%H', timestampMs/1000 - 6*60*60, 'unixepoch') AS integer) AS hour
+                , destroyed
+            FROM resonator_plexts r
+            JOIN (
+                SELECT id
+                FROM portals
+                WHERE lat BETWEEN ? AND ?
+                  AND lng BETWEEN ? AND ?
+            ) p ON r.portal = p.id
+        ) events
+        GROUP BY hour, destroyed
+    ) stats ON base_values.hour = stats.hour AND base_values.destroyed = stats.destroyed
+    ORDER BY base_values.hour
+    ''', (_degree_to_db(lat_min), _degree_to_db(lat_max),
+          _degree_to_db(lng_min), _degree_to_db(lng_max)))
+    return jsonify([dict(row) for row in g.cur])
 
 
 # Must be last - routes are hooked up at registration time

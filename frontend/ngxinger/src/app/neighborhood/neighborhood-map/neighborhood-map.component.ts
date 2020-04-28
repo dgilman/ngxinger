@@ -9,6 +9,8 @@ import { Style, Icon } from 'ol/style';
 
 import { Constants } from '../../constants'
 import { MapGeometry, OLLayerFactory } from '../../map-geometry';
+import { NeighborhoodSelect } from '../neighborhood-select';
+import { NeighborhoodSelectService } from '../neighborhood-select.service';
 import { MapGeometryService } from '../../map-geometry.service';
 import VectorLayer from 'ol/layer/Vector';
 import { Draw } from 'ol/interaction';
@@ -33,6 +35,7 @@ export class NeighborhoodMapComponent implements OnInit {
 
   constructor(
     private mapGeometryService: MapGeometryService,
+    private neighborhoodSelectService: NeighborhoodSelectService,
   ) {
     this.styles = {};
     // XXX had trouble getting let..of to work on enums, then arrays, so these are all literals
@@ -127,6 +130,16 @@ export class NeighborhoodMapComponent implements OnInit {
       [min_x, min_y],
     ]]);
     event.feature.setGeometry(newPolygon);
+
+
+    let neighborhoodSelect: NeighborhoodSelect = {
+        max_x: max_x,
+        max_y: max_y,
+        min_x: min_x,
+        min_y: min_y,
+    };
+
+    this.neighborhoodSelectService.sendMessage(neighborhoodSelect);
   }
 
   onDrawStart(event: DrawEvent) {

@@ -23,7 +23,8 @@ import { TopbarComponent } from './topbar/topbar.component'
 import { MostwantedMapComponent } from './mostwanted/mostwanted-map/mostwanted-map.component';
 import { MostwantedTableComponent } from './mostwanted/mostwanted-table/mostwanted-table.component';
 import { NeighborhoodMapComponent } from './neighborhood/neighborhood-map/neighborhood-map.component';
-import { NeighborhoodChartComponent } from './neighborhood/neighborhood-chart/neighborhood-chart.component';
+import { NeighborhoodHourlyChartComponent } from './neighborhood/neighborhood-hourly-chart/neighborhood-hourly-chart.component';
+import { NeighborhoodPlayerChartComponent } from './neighborhood/neighborhood-player-chart/neighborhood-player-chart.component';
 
 
 @NgModule({
@@ -35,7 +36,8 @@ import { NeighborhoodChartComponent } from './neighborhood/neighborhood-chart/ne
     MostwantedMapComponent,
     MostwantedTableComponent,
     NeighborhoodMapComponent,
-    NeighborhoodChartComponent,
+    NeighborhoodHourlyChartComponent,
+    NeighborhoodPlayerChartComponent,
   ],
   imports: [
     BrowserModule,
