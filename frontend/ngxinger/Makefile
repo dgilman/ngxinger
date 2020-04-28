@@ -18,7 +18,7 @@ $(frontend_clean):
 
 .PHONY: frontend_test
 frontend_test: $(node_modules_touch)
-	cd $(fe); ng test
+	cd $(fe); ng test --watch=false
 
 .PHONY: frontend_lint
 frontend_lint: $(node_modules_touch)
