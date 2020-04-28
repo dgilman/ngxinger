@@ -7,7 +7,8 @@ RUN wget -q https://dgilman.xen.prgmr.com/ngxinger-omaha.sqlite3 \
     && mkdir -p /nginx-root \
     && echo "deb http://httpredir.debian.org/debian unstable main" >> /etc/apt/sources.list \
     && apt update \
-    && apt -t unstable install -y python3.8 python3-distutils
+    && apt -t unstable install -y python3.8 python3-distutils \
+    && rm /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
