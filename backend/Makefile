@@ -25,7 +25,7 @@ $(backend_venv_activate):
 
 .PHONY: backend_test
 backend_test: $(backend_venv_activate)
-	cd $(be); venv/bin/pytest
+	cd $(be); NGXINGER_DSN=unused.sqlite3 venv/bin/pytest
 
 .PHONY: backend_lint
 backend_lint: $(backend_venv_activate)
