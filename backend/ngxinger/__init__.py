@@ -1,12 +1,11 @@
 import sqlite3
 import itertools
 from typing import Dict, List
-
-# XXX black
-# XXX top-level error handler
+import enum
 
 from flask import Flask, g, jsonify, Blueprint, request
 import pyproj
+from werkzeug.exceptions import InternalServerError
 
 app = Flask(__name__)
 api_bp = Blueprint(f"api", __name__)
@@ -21,12 +20,43 @@ LineString = List[Coordinate]
 Polygon = List[LineString]
 
 
+class NgxIngerException(Exception):
+    pass
+
+
+class BadRequest(NgxIngerException):
+    status_code = 400
+
+
+@enum.unique
+class Teams(enum.IntEnum):
+    NEUTRAL = 0
+    ENLIGHTENMENT = 1
+    RESISTANCE = 2
+
+
+@app.errorhandler(InternalServerError)
+def handle_500(e):
+    original = getattr(e, "original_exception", None)
+
+    if original is None:
+        # Someone directly raised a 500
+        return jsonify({"error": "An unknown error occurred"}), 500
+
+    # An unhandled exception was thrown
+    if hasattr(original, "status_code"):
+        status_code = original.status_code
+    else:
+        status_code = 500
+    return jsonify({"error": str(original)}), status_code
+
+
 @api_bp.before_request
 def before_request():
     try:
         conn = sqlite3.connect(app.config["DSN"])
     except Exception as e:
-        # XXX error handling
+        # Let this bubble up
         raise
     conn.isolation_level = None  # autocommit
     conn.row_factory = sqlite3.Row
@@ -88,10 +118,7 @@ def _row_to_field(row: sqlite3.Row) -> Polygon:
     ]
 
 
-# XXX marshmallow? this is typescript MapGeometry
-
-
-@api_bp.route("/map-geometry", methods=("GET",))
+@api_bp.route("/map-geometry")
 def get_map_geometry():
     retval = {
         "portals": [],
@@ -207,8 +234,8 @@ def _row_to_longest_held(row: sqlite3.Row) -> Dict:
 def get_longest_held():
     team = int(request.args.get("team", 0))
 
-    if team not in (0, 1, 2):
-        raise Exception("Invalid team parameter")
+    if team not in [key.value for key in Teams]:
+        raise BadRequest("Invalid team parameter")
 
     # Although not good database practice the original stats code
     # saved this table in descending order so a plain LIMIT works correctly.
@@ -258,11 +285,11 @@ def _degree_to_db(degree: float) -> int:
 def _validate_neighborhood_queryparams():
     for arg in ("xmin", "xmax", "ymin", "ymax"):
         if arg not in request.args:
-            raise Exception(f"Required parameter {arg} missing")
+            raise BadRequest(f"Required parameter {arg} missing")
         try:
             float(request.args[arg])
         except ValueError:
-            raise Exception(f"Unable to parse {arg} as float")
+            raise BadRequest(f"Unable to parse {arg} as float")
 
     xmin = float(request.args["xmin"])
     xmax = float(request.args["xmax"])
@@ -369,6 +396,11 @@ def get_neighborhood_players():
         ),
     )
     return jsonify([dict(row) for row in g.cur])
+
+
+@api_bp.route('/explode')
+def explode():
+    raise BadRequest("This always fails.")
 
 
 # Must be last - routes are hooked up at registration time

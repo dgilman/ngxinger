@@ -78,8 +78,6 @@ CREATE TABLE stats_weakest_by_age (
    current_held_time timedelta,
    health integer
    );
-CREATE TABLE sqlite_stat1(tbl,idx,stat);
-CREATE TABLE sqlite_stat4(tbl,idx,neq,nlt,ndlt,sample);
 CREATE TABLE portal_history (
    id INTEGER PRIMARY KEY,
    portal INTEGER REFERENCES portals(id),
